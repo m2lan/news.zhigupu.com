@@ -1,0 +1,7 @@
+name = "ever-read"
+compatibility_date = "2026-07-10"
+pages_build_output_dir = "./public"
+
+[[kv_namespaces]]
+binding = "NEWS_KV"
+id = "05a6848acdb04325a5994d63a3e1ac4d"

@@ -1,0 +1,10 @@
+{
+  "name": "ever-read",
+  "version": "1.0.0",
+  "private": true,
+  "description": "常青藤快讯 - AI驱动的新闻资讯站",
+  "scripts": {
+    "dev": "npx wrangler pages dev public --kv NEWS_KV",
+    "deploy": "npx wrangler pages deploy public"
+  }
+}
