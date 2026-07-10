@@ -65,13 +65,32 @@ const App = {
     }
   },
 
+  updateNavSearchResult(total, query) {
+    const nav = document.getElementById('navCategories');
+    nav.innerHTML = `
+      <div class="nav-item active" data-category="all">
+        🔍 搜索 "${Utils.escapeHtml(query)}" - 找到 ${total} 条
+      </div>
+      <div class="nav-item" data-category="all" onclick="App.clearSearch()">✕ 清除搜索</div>
+    `;
+  },
+
+  clearSearch() {
+    document.getElementById('searchInput').value = '';
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.loadCategories();
+    this.loadNews();
+  },
+
   async loadNews(append = false) {
     if (this.loading) return;
     this.loading = true;
 
     const list = document.getElementById('newsList');
     const loadMore = document.getElementById('loadMore');
-    const searchQuery = document.getElementById('searchInput').value.trim();
+    const searchInput = document.getElementById('searchInput');
+    const searchQuery = searchInput.value.trim();
 
     if (!append) {
       list.innerHTML = '<div class="loading"><div class="spinner"></div><p>加载中...</p></div>';
@@ -94,12 +113,19 @@ const App = {
       const data = await API.getNews(params);
       this.hasMore = data.hasMore;
 
+      // 搜索时更新导航显示
+      if (searchQuery) {
+        this.updateNavSearchResult(data.total, searchQuery);
+      } else {
+        this.loadCategories(); // 恢复正常显示
+      }
+
       if (data.items.length === 0 && !append) {
         list.innerHTML = `
           <div class="empty">
-            <div class="empty-icon">📭</div>
-            <p>暂无新闻</p>
-            <p style="font-size: 14px; margin-top: 8px;">定时任务会自动更新新闻内容</p>
+            <div class="empty-icon">🔍</div>
+            <p>未找到 "${Utils.escapeHtml(searchQuery)}" 相关新闻</p>
+            <p style="font-size: 14px; margin-top: 8px;">换个关键词试试</p>
           </div>
         `;
         loadMore.style.display = 'none';
