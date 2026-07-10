@@ -2,52 +2,114 @@ name: Update News
 
 on:
   schedule:
-    # 每天 8:00, 12:00, 18:00, 22:00 (UTC+8)
-    - cron: '0 0 * * *'   # 0:00 UTC = 8:00 CST
-    - cron: '0 4 * * *'   # 4:00 UTC = 12:00 CST
-    - cron: '0 10 * * *'  # 10:00 UTC = 18:00 CST
-    - cron: '0 14 * * *'  # 14:00 UTC = 22:00 CST
+    - cron: '0 0 * * *'   # 8:00 CST
+    - cron: '0 4 * * *'   # 12:00 CST
+    - cron: '0 10 * * *'  # 18:00 CST
+    - cron: '0 14 * * *'  # 22:00 CST
   workflow_dispatch:
 
 jobs:
   update-current:
     runs-on: ubuntu-latest
     steps:
-      - name: Update current news
+      - name: Update 时事热点
         run: |
           curl -X POST "${{ secrets.SITE_URL }}/api/update" \
             -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
             -H "Content-Type: application/json" \
             -d '{"category":"current","useAI":false}' \
-            --max-time 30 \
-            --retry 2
+            --max-time 30 --retry 2
 
   update-tech:
     runs-on: ubuntu-latest
     steps:
-      - name: Update tech news
+      - name: Update 科技财经
         run: |
           curl -X POST "${{ secrets.SITE_URL }}/api/update" \
             -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
             -H "Content-Type: application/json" \
             -d '{"category":"tech","useAI":false}' \
-            --max-time 30 \
-            --retry 2
+            --max-time 30 --retry 2
 
   update-sports:
     runs-on: ubuntu-latest
     steps:
-      - name: Update sports news
+      - name: Update 体育娱乐
         run: |
           curl -X POST "${{ secrets.SITE_URL }}/api/update" \
             -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
             -H "Content-Type: application/json" \
             -d '{"category":"sports","useAI":false}' \
-            --max-time 30 \
-            --retry 2
+            --max-time 30 --retry 2
+
+  update-geek:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update 极客数码
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"geek","useAI":false}' \
+            --max-time 30 --retry 2
+
+  update-outdoor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update 户外运动
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"outdoor","useAI":false}' \
+            --max-time 30 --retry 2
+
+  update-media:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update 影视书单
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"media","useAI":false}' \
+            --max-time 30 --retry 2
+
+  update-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update 软件工具
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"tools","useAI":false}' \
+            --max-time 30 --retry 2
+
+  update-gaming:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update 游戏动漫
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"gaming","useAI":false}' \
+            --max-time 30 --retry 2
+
+  update-design:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update 设计与创意
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"design","useAI":false}' \
+            --max-time 30 --retry 2
 
   reindex:
-    needs: [update-current, update-tech, update-sports]
+    needs: [update-current, update-tech, update-sports, update-geek, update-outdoor, update-media, update-tools, update-gaming, update-design]
     runs-on: ubuntu-latest
     steps:
       - name: Reindex search
