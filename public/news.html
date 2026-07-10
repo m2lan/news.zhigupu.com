@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>新闻详情 - 常青藤快讯</title>
+  <title>文章详情 - EverRead</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -12,7 +12,7 @@
     <div class="header-inner">
       <a class="logo" href="/">
         <span class="logo-icon">🌿</span>
-        <span>常青藤快讯</span>
+        <span>EverRead</span>
       </a>
     </div>
   </header>
@@ -20,14 +20,18 @@
   <main class="detail-container">
     <a class="detail-back" href="javascript:history.back()">← 返回</a>
     <div class="detail-header">
-      <h1 class="detail-title" id="detailTitle">加载中...</h1>
+      <h1 class="detail-title" id="detailTitle"></h1>
       <div class="detail-meta" id="detailMeta"></div>
     </div>
     <div class="detail-content" id="detailContent">
-      <div class="loading"><div class="spinner"></div><p>加载中...</p></div>
+      <div class="loading"><div class="spinner"></div></div>
     </div>
     <div class="detail-tags" id="detailTags"></div>
   </main>
+
+  <footer class="footer">
+    © 2026 EverRead · AI 驱动的新闻资讯
+  </footer>
 
   <script src="/js/utils.js"></script>
   <script src="/js/api.js"></script>

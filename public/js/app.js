@@ -50,13 +50,12 @@ const App = {
     try {
       const categories = await API.getCategories();
       const nav = document.getElementById('navCategories');
-      const allCount = categories.reduce((sum, cat) => sum + cat.count, 0);
 
       nav.innerHTML = `
-        <div class="nav-item active" data-category="all">全部 (${allCount})</div>
+        <div class="nav-item active" data-category="all">全部</div>
         ${categories.map(cat => `
           <div class="nav-item" data-category="${cat.id}">
-            ${Utils.getCategoryIcon(cat.id)} ${cat.name} (${cat.count})
+            ${Utils.getCategoryName(cat.id)}
           </div>
         `).join('')}
       `;
@@ -69,9 +68,9 @@ const App = {
     const nav = document.getElementById('navCategories');
     nav.innerHTML = `
       <div class="nav-item active" data-category="all">
-        🔍 搜索 "${Utils.escapeHtml(query)}" - 找到 ${total} 条
+        搜索 "${Utils.escapeHtml(query)}" · ${total} 条结果
       </div>
-      <div class="nav-item" data-category="all" onclick="App.clearSearch()">✕ 清除搜索</div>
+      <div class="nav-item" data-category="all" onclick="App.clearSearch()">清除搜索</div>
     `;
   },
 
@@ -87,12 +86,14 @@ const App = {
     this.loading = true;
 
     const list = document.getElementById('newsList');
+    const heroSection = document.getElementById('heroSection');
     const loadMore = document.getElementById('loadMore');
     const searchInput = document.getElementById('searchInput');
     const searchQuery = searchInput.value.trim();
 
     if (!append) {
-      list.innerHTML = '<div class="loading"><div class="spinner"></div><p>加载中...</p></div>';
+      list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+      heroSection.innerHTML = '';
     }
 
     try {
@@ -118,29 +119,40 @@ const App = {
       }
 
       if (data.items.length === 0 && !append) {
+        heroSection.innerHTML = '';
         list.innerHTML = `
           <div class="empty">
             <div class="empty-icon">🔍</div>
-            <p>未找到 "${Utils.escapeHtml(searchQuery)}" 相关新闻</p>
-            <p style="font-size: 14px; margin-top: 8px;">换个关键词试试</p>
+            <p>未找到 "${Utils.escapeHtml(searchQuery)}" 相关内容</p>
+            <p style="margin-top: 8px;">换个关键词试试</p>
           </div>
         `;
         loadMore.style.display = 'none';
         return;
       }
 
-      const html = data.items.map(news => this.renderNewsCard(news)).join('');
-
       if (append) {
+        // 追加模式：直接添加卡片
+        const html = data.items.map(news => this.renderNewsCard(news)).join('');
         list.insertAdjacentHTML('beforeend', html);
       } else {
-        list.innerHTML = html;
+        // 首页加载：第一条为 hero，其余为卡片
+        if (this.currentPage === 1 && data.items.length > 0) {
+          const hero = data.items[0];
+          heroSection.innerHTML = this.renderHeroCard(hero);
+
+          const rest = data.items.slice(1);
+          list.innerHTML = rest.map(news => this.renderNewsCard(news)).join('');
+        } else {
+          list.innerHTML = data.items.map(news => this.renderNewsCard(news)).join('');
+        }
       }
 
       loadMore.style.display = this.hasMore ? 'block' : 'none';
     } catch (err) {
       console.error('Load news failed:', err);
       if (!append) {
+        heroSection.innerHTML = '';
         list.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><p>加载失败，请稍后重试</p></div>';
       }
     } finally {
@@ -148,20 +160,32 @@ const App = {
     }
   },
 
+  renderHeroCard(news) {
+    return `
+      <div class="hero" onclick="location.href='/news.html?id=${news.id}'">
+        <div class="hero-label">头条</div>
+        <h2 class="hero-title">${Utils.escapeHtml(news.title)}</h2>
+        <p class="hero-summary">${Utils.escapeHtml(Utils.truncate(Utils.stripHtml(news.summary), 200))}</p>
+        <div class="hero-meta">
+          <span class="source">${Utils.escapeHtml(news.source)}</span>
+          <span>${Utils.formatDate(news.publishedAt)}</span>
+        </div>
+      </div>
+    `;
+  },
+
   renderNewsCard(news) {
     return `
       <article class="news-card" onclick="location.href='/news.html?id=${news.id}'">
         <div class="news-card-header">
-          <span class="news-category">${Utils.getCategoryIcon(news.category)}</span>
+          <span class="news-category-tag">${Utils.getCategoryName(news.category)}</span>
           <h3 class="news-card-title">${Utils.escapeHtml(news.title)}</h3>
         </div>
         <p class="news-card-summary">${Utils.escapeHtml(Utils.truncate(Utils.stripHtml(news.summary), 120))}</p>
         <div class="news-card-meta">
+          <span class="source">${Utils.escapeHtml(news.source)}</span>
           <span>${Utils.formatDate(news.publishedAt)}</span>
-          <span>·</span>
-          <span>${Utils.escapeHtml(news.source)}</span>
           ${news.tags.length ? `
-            <span>·</span>
             <div class="news-tags">
               ${news.tags.slice(0, 3).map(tag => `<span class="tag">${Utils.escapeHtml(tag)}</span>`).join('')}
             </div>
@@ -192,18 +216,16 @@ const Detail = {
 
       document.getElementById('detailTitle').textContent = news.title;
       document.getElementById('detailMeta').innerHTML = `
-        <span>${Utils.getCategoryIcon(news.category)} ${Utils.getCategoryName(news.category)}</span>
-        <span>·</span>
+        <span class="source">${Utils.escapeHtml(news.source)}</span>
         <span>${Utils.formatDate(news.publishedAt)}</span>
-        <span>·</span>
-        <span>${Utils.escapeHtml(news.source)}</span>
+        <span>${Utils.getCategoryName(news.category)}</span>
       `;
       document.getElementById('detailContent').innerHTML = Utils.markdownToHtml(news.content);
       document.getElementById('detailTags').innerHTML = news.tags.map(
         tag => `<span class="tag">${Utils.escapeHtml(tag)}</span>`
       ).join('');
 
-      document.title = `${news.title} - 常青藤快讯`;
+      document.title = `${news.title} - EverRead`;
     } catch (err) {
       console.error('Load detail failed:', err);
       document.getElementById('detailContent').innerHTML = `

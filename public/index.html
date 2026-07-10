@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>常青藤快讯 - EverRead</title>
+  <title>EverRead - 常青藤快讯</title>
   <meta name="description" content="AI驱动的新闻资讯，自动整理最新热点">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
@@ -13,10 +13,12 @@
     <div class="header-inner">
       <a class="logo" href="/">
         <span class="logo-icon">🌿</span>
-        <span>常青藤快讯</span>
+        <span>EverRead</span>
       </a>
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="搜索新闻标题、内容...">
+      <div class="search-wrapper">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="搜索...">
+        </div>
       </div>
     </div>
   </header>
@@ -24,26 +26,31 @@
   <nav class="nav">
     <div class="nav-inner" id="navCategories">
       <div class="nav-item active" data-category="all">全部</div>
-      <div class="nav-item" data-category="current">📰 时事热点</div>
-      <div class="nav-item" data-category="tech">💻 科技财经</div>
-      <div class="nav-item" data-category="sports">⚽ 体育娱乐</div>
-      <div class="nav-item" data-category="geek">🔧 极客数码</div>
-      <div class="nav-item" data-category="outdoor">⛰️ 户外运动</div>
-      <div class="nav-item" data-category="media">🎬 影视书单</div>
-      <div class="nav-item" data-category="tools">🛠️ 软件工具</div>
-      <div class="nav-item" data-category="gaming">🎮 游戏动漫</div>
-      <div class="nav-item" data-category="design">🎨 设计与创意</div>
+      <div class="nav-item" data-category="current">时事热点</div>
+      <div class="nav-item" data-category="tech">科技财经</div>
+      <div class="nav-item" data-category="sports">体育娱乐</div>
+      <div class="nav-item" data-category="geek">极客数码</div>
+      <div class="nav-item" data-category="outdoor">户外运动</div>
+      <div class="nav-item" data-category="media">影视书单</div>
+      <div class="nav-item" data-category="tools">软件工具</div>
+      <div class="nav-item" data-category="gaming">游戏动漫</div>
+      <div class="nav-item" data-category="design">设计与创意</div>
     </div>
   </nav>
 
   <main class="main">
+    <div id="heroSection"></div>
     <div class="news-list" id="newsList">
-      <div class="loading"><div class="spinner"></div><p>加载中...</p></div>
+      <div class="loading"><div class="spinner"></div></div>
     </div>
     <div class="load-more" id="loadMore" style="display: none;">
       <button class="btn" id="loadMoreBtn">加载更多</button>
     </div>
   </main>
+
+  <footer class="footer">
+    © 2026 EverRead · AI 驱动的新闻资讯
+  </footer>
 
   <script src="/js/utils.js"></script>
   <script src="/js/api.js"></script>
