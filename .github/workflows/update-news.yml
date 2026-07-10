@@ -7,18 +7,51 @@ on:
     - cron: '0 4 * * *'   # 4:00 UTC = 12:00 CST
     - cron: '0 10 * * *'  # 10:00 UTC = 18:00 CST
     - cron: '0 14 * * *'  # 14:00 UTC = 22:00 CST
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
-  update:
+  update-current:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger news update
+      - name: Update current news
         run: |
           curl -X POST "${{ secrets.SITE_URL }}/api/update" \
             -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
             -H "Content-Type: application/json" \
-            -d '{}' \
-            --max-time 60 \
-            --retry 3 \
-            --retry-delay 10
+            -d '{"category":"current","useAI":false}' \
+            --max-time 30 \
+            --retry 2
+
+  update-tech:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update tech news
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"tech","useAI":false}' \
+            --max-time 30 \
+            --retry 2
+
+  update-sports:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update sports news
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/update" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"category":"sports","useAI":false}' \
+            --max-time 30 \
+            --retry 2
+
+  reindex:
+    needs: [update-current, update-tech, update-sports]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reindex search
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/reindex" \
+            -H "Authorization: Bearer ${{ secrets.UPDATE_SECRET }}" \
+            --max-time 30
