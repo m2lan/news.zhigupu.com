@@ -88,7 +88,7 @@ const App = {
       }
 
       if (searchQuery) {
-        params.tag = searchQuery;
+        params.q = searchQuery;
       }
 
       const data = await API.getNews(params);

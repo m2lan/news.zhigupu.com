@@ -5,17 +5,33 @@ export async function onRequest(context) {
   const page = parseInt(url.searchParams.get('page') || '1');
   const limit = parseInt(url.searchParams.get('limit') || '20');
   const tag = url.searchParams.get('tag');
+  const query = url.searchParams.get('q')?.trim();
 
   try {
     let newsIds = [];
 
-    if (tag) {
-      // 按标签筛选
+    if (query) {
+      // 全文搜索：从搜索索引中匹配标题和摘要
+      const searchIndex = await env.NEWS_KV.get('index:search', 'json') || [];
+      const lowerQuery = query.toLowerCase();
+
+      const matched = searchIndex.filter(item =>
+        item.title?.toLowerCase().includes(lowerQuery) ||
+        item.summary?.toLowerCase().includes(lowerQuery) ||
+        item.tags?.some(t => t.toLowerCase().includes(lowerQuery))
+      );
+
+      // 如果同时指定了分类，再过滤
+      const filtered = category !== 'all'
+        ? matched.filter(item => item.category === category)
+        : matched;
+
+      newsIds = filtered.map(item => item.id);
+    } else if (tag) {
       const tagIndex = await env.NEWS_KV.get('index:tags', 'json') || {};
       const tagEntry = Object.entries(tagIndex).find(([t]) => t.toLowerCase() === tag.toLowerCase());
       newsIds = tagEntry ? tagEntry[1].ids || [] : [];
     } else if (category === 'all') {
-      // 获取所有分类的新闻
       const categories = ['current', 'tech', 'sports', 'custom'];
       const allIds = await Promise.all(
         categories.map(cat => env.NEWS_KV.get(`index:news:${cat}`, 'json'))

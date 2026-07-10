@@ -237,6 +237,25 @@ async function saveNews(env, category, newsList) {
   }
   await env.NEWS_KV.put('index:tags', JSON.stringify(tagIndex));
 
+  // 更新搜索索引
+  const searchIndex = await env.NEWS_KV.get('index:search', 'json') || [];
+  const newSearchEntries = newsList
+    .filter(item => !existingTitles.has(item.title))
+    .map(item => {
+      const newsId = newIds.find(n => n.title === item.title)?.id;
+      return newsId ? {
+        id: newsId,
+        title: item.title,
+        summary: item.summary?.slice(0, 150) || '',
+        tags: item.tags || [],
+        category,
+      } : null;
+    })
+    .filter(Boolean);
+
+  const updatedSearchIndex = [...newSearchEntries, ...searchIndex].slice(0, 1000);
+  await env.NEWS_KV.put('index:search', JSON.stringify(updatedSearchIndex));
+
   return added;
 }
 
