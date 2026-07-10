@@ -24,15 +24,25 @@ const Utils = {
   },
 
   escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
   },
 
+  stripHtml(html) {
+    if (!html) return '';
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || div.innerText || '';
+  },
+
   // 简单的 markdown 转 HTML
   markdownToHtml(md) {
     if (!md) return '';
-    return md
+    // 先清理已有的 HTML 标签
+    const clean = this.stripHtml(md);
+    return clean
       .replace(/^### (.*$)/gm, '<h3>$1</h3>')
       .replace(/^## (.*$)/gm, '<h2>$1</h2>')
       .replace(/^# (.*$)/gm, '<h1>$1</h1>')

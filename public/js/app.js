@@ -155,7 +155,7 @@ const App = {
           <span class="news-category">${Utils.getCategoryIcon(news.category)}</span>
           <h3 class="news-card-title">${Utils.escapeHtml(news.title)}</h3>
         </div>
-        <p class="news-card-summary">${Utils.escapeHtml(Utils.truncate(news.summary, 120))}</p>
+        <p class="news-card-summary">${Utils.escapeHtml(Utils.truncate(Utils.stripHtml(news.summary), 120))}</p>
         <div class="news-card-meta">
           <span>${Utils.formatDate(news.publishedAt)}</span>
           <span>·</span>
