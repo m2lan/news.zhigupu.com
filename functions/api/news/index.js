@@ -32,7 +32,7 @@ export async function onRequest(context) {
       const tagEntry = Object.entries(tagIndex).find(([t]) => t.toLowerCase() === tag.toLowerCase());
       newsIds = tagEntry ? tagEntry[1].ids || [] : [];
     } else if (category === 'all') {
-      const categories = ['current', 'tech', 'sports', 'custom'];
+      const categories = ['current', 'tech', 'sports', 'geek', 'outdoor', 'media', 'tools', 'gaming', 'design'];
       const allIds = await Promise.all(
         categories.map(cat => env.NEWS_KV.get(`index:news:${cat}`, 'json'))
       );

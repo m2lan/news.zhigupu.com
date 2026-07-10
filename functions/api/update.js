@@ -2,7 +2,12 @@ const CATEGORIES = {
   current: '时事热点',
   tech: '科技财经',
   sports: '体育娱乐',
-  custom: '自定义标签',
+  geek: '极客数码',
+  outdoor: '户外运动',
+  media: '影视书单',
+  tools: '软件工具',
+  gaming: '游戏动漫',
+  design: '设计与创意',
 };
 
 // 新闻源配置（RSS/JSON API）
@@ -18,11 +23,34 @@ const NEWS_SOURCES = {
     { url: 'https://www.ruanyifeng.com/blog/atom.xml', name: '阮一峰' },
   ],
   sports: [
-    { url: 'https://36kr.com/feed', name: '36氪' },  // 36kr 也有体育娱乐内容
+    { url: 'https://36kr.com/feed', name: '36氪' },
     { url: 'https://www.dongqiudi.com/rss', name: '懂球帝' },
   ],
-  custom: [
+  geek: [
     { url: 'https://36kr.com/feed', name: '36氪' },
+    { url: 'https://sspai.com/feed', name: '少数派' },
+    { url: 'https://www.ruanyifeng.com/blog/atom.xml', name: '阮一峰' },
+    { url: 'https://www.ifanr.com/feed', name: '爱范儿' },
+  ],
+  outdoor: [
+    { url: 'https://www.8264.com/rss', name: '8264户外' },
+    { url: 'https://www.sohu.com/rss/a/outdoor', name: '搜狐户外' },
+  ],
+  media: [
+    { url: 'https://www.douban.com/feed', name: '豆瓣' },
+    { url: 'https://www.sohu.com/rss/a/ent', name: '搜狐娱乐' },
+  ],
+  tools: [
+    { url: 'https://sspai.com/feed', name: '少数派' },
+    { url: 'https://www.ifanr.com/feed', name: '爱范儿' },
+  ],
+  gaming: [
+    { url: 'https://www.gamersky.com/rss', name: '游民星空' },
+    { url: 'https://www.3dmgame.com/rss', name: '3DM' },
+  ],
+  design: [
+    { url: 'https://www.zcool.com.cn/rss', name: '站酷' },
+    { url: 'https://sspai.com/feed', name: '少数派' },
   ],
 };
 

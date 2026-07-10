@@ -54,7 +54,12 @@ const Utils = {
       current: '时事热点',
       tech: '科技财经',
       sports: '体育娱乐',
-      custom: '自定义',
+      geek: '极客数码',
+      outdoor: '户外运动',
+      media: '影视书单',
+      tools: '软件工具',
+      gaming: '游戏动漫',
+      design: '设计与创意',
     };
     return names[slug] || slug;
   },
@@ -64,7 +69,12 @@ const Utils = {
       current: '📰',
       tech: '💻',
       sports: '⚽',
-      custom: '🏷️',
+      geek: '🔧',
+      outdoor: '⛰️',
+      media: '🎬',
+      tools: '🛠️',
+      gaming: '🎮',
+      design: '🎨',
     };
     return icons[slug] || '📄';
   },
