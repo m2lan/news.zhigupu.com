@@ -79,8 +79,7 @@ const App = {
     document.getElementById('searchInput').value = '';
     this.currentPage = 1;
     this.hasMore = true;
-    this.loadCategories();
-    this.loadNews();
+    this.loadCategories().then(() => this.loadNews());
   },
 
   async loadNews(append = false) {
@@ -116,8 +115,6 @@ const App = {
       // 搜索时更新导航显示
       if (searchQuery) {
         this.updateNavSearchResult(data.total, searchQuery);
-      } else {
-        this.loadCategories(); // 恢复正常显示
       }
 
       if (data.items.length === 0 && !append) {
